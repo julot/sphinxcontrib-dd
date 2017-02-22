@@ -51,14 +51,16 @@ entities
 relationships
 -------------
 
-::
-
-  |           One
-  ||          One and only one (Seems impossible in GraphViz)
-  |0 / 0|     Zero or one
-  > / <       Many
-  >0 / 0<     Zero or many
-  >| / |<     One or many
+=======  ===============================================
+Symbol   Meaning
+=======  ===============================================
+|        One
+||       One and only one (Seems impossible in GraphViz)
+|0 / 0|  Zero or one
+> / <    Many
+>0 / 0<  Zero or many
+>| / |<  One or many
+=======  ===============================================
 
 ::
 
