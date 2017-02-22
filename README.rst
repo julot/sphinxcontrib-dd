@@ -21,11 +21,9 @@ Installation
 Schema
 ======
 
-`definitions <http://swagger.io/specification/#definitionsObject>`__
-
-entities
-
-relationships
+- `definitions <http://swagger.io/specification/#definitionsObject>`__
+- entities
+- relationships
 
 
 entities
@@ -33,8 +31,22 @@ entities
 
 ::
 
-  .. include:: /_entities.rst
-
+  entities:
+    User:
+      name: users
+      description: Table to stores user information.
+      columns:
+        $ref: '#/definitions/User'
+    Role:
+      name: roles
+      description: Table to stores roles.
+      columns:
+        $ref: '#/definitions/Role'
+    UserRole:
+      name: users_roles
+      description: Table to stores user roles.
+      columns:
+        $ref: '#/definitions/UserRole'
 
 relationships
 -------------
@@ -64,39 +76,10 @@ Generate database diagram using GraphViz:
 
   .. database-diagram:: data.yml
 
-or
-
-::
-
-  .. database-diagram::
-
-    .. include:: /_entities.rst
-    relationships:
-      - User |--0< UserRole
-      - Role |--0< UserRole
-
 Generate data dictionary table:
 
 ::
 
   .. data-dictionary:: data.yml
 
-or
-
-::
-
-  .. data-dictionary::
-
-    entities:
-      User:
-        name: users
-        description: Table to stores user information.
-      Role:
-        name: roles
-        description: Table to stores roles.
-      UserRole:
-        name: users_roles
-        description: Table to stores user roles.
-    relationships:
-      - User |--0< UserRole
-      - Role |--0< UserRole
+You can also type the content as normal directive.
