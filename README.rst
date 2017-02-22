@@ -17,6 +17,12 @@ Installation
 
   > pip install sphinxcontrib-dd
 
+In ``conf.py``:
+
+::
+
+  extensions = ['sphinxcontrib.dd']
+
 
 Schema
 ======
