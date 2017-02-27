@@ -35,6 +35,13 @@ Schema
 entities
 --------
 
+===========  ============================
+Field Name   Description
+===========  ============================
+name         Table name
+description  Information about the entity
+===========  ============================
+
 ::
 
   entities:
@@ -54,8 +61,11 @@ entities
       columns:
         $ref: '#/definitions/UserRole'
 
+
 relationships
 -------------
+
+Determine the relationship between two entities.
 
 =========  ===============================================
 Symbol     Meaning
@@ -67,6 +77,8 @@ Symbol     Meaning
 >0 / 0<    Zero or many
 >\| / \|<  One or many
 =========  ===============================================
+
+The syntax is ``<symbol>--<symbol>``.
 
 ::
 
