@@ -62,6 +62,16 @@ description  Information about the entity
         $ref: '#/definitions/UserRole'
 
 
+.. note::
+
+  Because swagger spec didn't allow unknown entry (entities),
+  it would be better if our ref able to resolve ref to another file.
+
+  Example:
+
+  ``$ref: 'part.yml#/definitions/User``
+
+
 relationships
 -------------
 
