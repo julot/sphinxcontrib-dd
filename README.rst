@@ -113,3 +113,10 @@ Generate data dictionary table:
   .. data-dictionary:: data.yml
 
 You can also type the content as normal directive.
+
+
+TODO
+====
+
+1. Change entity name into h+1 depending on the context.
+2. Resolve $ref to another file.
