@@ -24,6 +24,12 @@ class Directive(BaseDirective):
         # app = env.app
         # config = app.config
 
+        # FIXME: Change this to options to specify header label
+        headers = ['Name', 'Type', 'Length', 'Description']
+
+        # FIXME: Change to options to specify the data to fetch
+        columns = ['name', 'type', 'maxLength', 'description']
+
         rel_path, path = env.relfn2path(directives.path(self.arguments[0]))
 
         # Add the file as a dependency to the current document.
@@ -43,18 +49,14 @@ class Directive(BaseDirective):
         for name, entity in spec['entities'].items():
             data.append(create_section(name=name))
             data.extend(generate_description(entity=entity))
-            data.append(create_table(entity=entity))
+            table = create_table(entity=entity, columns=columns, headers=headers)
+            data.append(table)
 
         return data
 
 
 def create_section(name):
     # FIXME: Make this into h+1 (h1-h6) depending on the context
-
-    # section = nodes.section(names=[name])
-    # title = nodes.title(text=name)
-    # section += title
-    # tables.append(section)
 
     paragraph = nodes.paragraph()
     strong = nodes.strong(text=name)
@@ -88,36 +90,39 @@ def create_header(data):
     return head
 
 
-def create_table(entity):
-    # FIXME: Change this to directive options named headers
-    headers = ['Name', 'Type', 'Length', 'Description']
+def create_body(entity, columns):
+    body = nodes.tbody()
+    for k, v in entity['columns']['properties'].items():
+        data = []
+        for column in columns:
+            if column == 'name':
+                data.append(k)
+                continue
 
-    # TODO: Add directive options name columns to specify the data to fetch
-    # TODO: Add widths options directive
+            data.append(v.get(column, ''))
+        body.append(create_row(data=data))
 
-    table = nodes.table()
+    return body
 
-    max_cols = len(headers)
 
-    group = nodes.tgroup(cols=max_cols)
-    table.append(group)
+def create_group(columns):
+    group = nodes.tgroup(cols=columns)
 
-    col_widths = [100 // max_cols] * max_cols
+    col_widths = [100 // columns] * columns
     group.extend(
         nodes.colspec(colwidth=col_width) for col_width in col_widths
     )
 
-    group.append(create_header(headers))
+    return group
 
-    body = nodes.tbody()
-    group.append(body)
-    for k, v in entity['columns']['properties'].items():
-        data = (
-            k,
-            v.get('type', ''),
-            v.get('maxLength', ''),
-            v.get('description', ''),
-        )
-        body.append(create_row(data))
 
+def create_table(entity, columns=None, headers=None, widths=None):
+    # TODO: Add widths options directive
+
+    group = create_group(columns=len(headers))
+    group.append(create_header(data=headers))
+    group.append(create_body(entity=entity, columns=columns))
+
+    table = nodes.table()
+    table.append(group)
     return table
