@@ -1,0 +1,51 @@
+definitions:
+  Identity:
+    type: integer
+    format: int64
+    minimum: 1
+
+  User:
+    properties:
+      id:
+        $ref: '#/definitions/Identity'
+      name:
+        type: nvarchar
+        maxLength: 255
+
+  Role:
+    properties:
+      id:
+        $ref: '#/definitions/Identity'
+      name:
+        type: nvarchar
+        maxLength: 255
+
+  UserRole:
+    properties:
+      id:
+        $ref: '#/definitions/Identity'
+      user_id:
+        $ref: '#/definitions/Identity'
+      role_id:
+        $ref: '#/definitions/Identity'
+        
+entities:
+  User:
+    name: users
+    description: Table to stores user information.
+    columns:
+      $ref: '#/definitions/User'
+  Role:
+    name: roles
+    description: Table to stores roles.
+    columns:
+      $ref: '#/definitions/Role'
+  UserRole:
+    name: users_roles
+    description: Table to stores user roles.
+    columns:
+      $ref: '#/definitions/UserRole'
+
+relationships:
+  - User |--0< UserRole
+  - Role |--0< UserRole
