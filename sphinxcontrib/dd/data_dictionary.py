@@ -12,6 +12,7 @@ class Directive(BaseDirective):
 
     required_arguments = 1  # Path to yml file
     final_argument_whitespace = True
+    has_content = False
 
     option_spec = {
         'encoding': directives.encoding,
@@ -39,9 +40,9 @@ class Directive(BaseDirective):
         data = []
 
         for name, entity in spec['entities'].items():
-            data += self.create_section(name=name)
-            data += self.create_description(entity=entity)
-            data += self.create_table(entity=entity)
+            data.extend(self.create_section(name=name))
+            data.extend(self.create_description(entity=entity))
+            data.extend(self.create_table(entity=entity))
 
         return data
 
@@ -56,7 +57,7 @@ class Directive(BaseDirective):
 
         paragraph = nodes.paragraph()
         strong = nodes.strong(text=name)
-        paragraph += strong
+        paragraph.append(strong)
 
         return [paragraph]
 
@@ -74,7 +75,11 @@ class Directive(BaseDirective):
 
     @staticmethod
     def create_table(entity):
+        # FIXME: Change this to directive options named headers
         headers = ['Name', 'Type', 'Description']
+
+        # TODO: Add directive options name columns to specify the data to fetch
+        # TODO: Add widths options directive
 
         table = nodes.table()
 
@@ -82,33 +87,31 @@ class Directive(BaseDirective):
         col_widths = [100 // max_cols] * max_cols
 
         group = nodes.tgroup(cols=max_cols)
-        table += group
         group.extend(
             nodes.colspec(colwidth=col_width) for col_width in col_widths
         )
+        table.append(group)
 
         # Add header
         head = nodes.thead()
-        group += head
-        row_node = nodes.row()
-        head += row_node
-        row_node.extend(
-            nodes.entry(h, nodes.paragraph(text=h)) for h in headers
-        )
+        group.append(head)
+        row = nodes.row()
+        for header in headers:
+            row.append(nodes.entry(header, nodes.paragraph(text=header)))
+        head.append(row)
 
         body = nodes.tbody()
-        group += body
+        group.append(body)
         for k, v in entity['columns']['properties'].items():
             data = (
                 k,
-                v.get('type', '-'),
-                v.get('description', '-')
+                v.get('type', ''),
+                v.get('description', ''),
             )
 
             row = nodes.row()
-            row.extend(
-                nodes.entry(i, nodes.paragraph(text=i)) for i in data
-            )
-            body += row
+            for datum in data:
+                row.append(nodes.entry(datum, nodes.paragraph(text=datum)))
+            body.append(row)
 
         return [table]
