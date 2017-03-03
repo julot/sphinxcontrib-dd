@@ -26,92 +26,98 @@ class Directive(BaseDirective):
 
         rel_path, path = env.relfn2path(directives.path(self.arguments[0]))
 
-        # Add OpenAPI spec as a dependency to the current document.
-        # That means the document will be rebuilt if the spec is changed.
+        # Add the file as a dependency to the current document.
+        # That means the document will be rebuilt if the file is changed.
         env.note_dependency(rel_path)
 
-        # Read the spec using encoding passed to the directive or fallback to
+        # Read the file using encoding passed to the directive or fallback to
         # the one specified in Sphinx's config.
         encoding = self.options.get('encoding', env.config.source_encoding)
         with io.open(path, 'rt', encoding=encoding) as stream:
             spec = load_yaml(stream, yaml.Loader)
+        # FIXME: Resolve from external file
         spec = yaml.resolve_refs('file://%s' % path, spec)
 
         data = []
 
         for name, entity in spec['entities'].items():
-            data.extend(self.create_section(name=name))
-            data.extend(self.create_description(entity=entity))
-            data.extend(self.create_table(entity=entity))
+            data.append(create_section(name=name))
+            data.extend(generate_description(entity=entity))
+            data.append(create_table(entity=entity))
 
         return data
 
-    @staticmethod
-    def create_section(name):
-        # FIXME: Make this into h+1 (h1-h6) depending on the context
 
-        # section = nodes.section(names=[name])
-        # title = nodes.title(text=name)
-        # section += title
-        # tables.append(section)
+def create_section(name):
+    # FIXME: Make this into h+1 (h1-h6) depending on the context
 
-        paragraph = nodes.paragraph()
-        strong = nodes.strong(text=name)
-        paragraph.append(strong)
+    # section = nodes.section(names=[name])
+    # title = nodes.title(text=name)
+    # section += title
+    # tables.append(section)
 
-        return [paragraph]
+    paragraph = nodes.paragraph()
+    strong = nodes.strong(text=name)
+    paragraph.append(strong)
 
-    @staticmethod
-    def create_description(entity):
-        name = entity.get('name', None)
-        if name:
-            paragraph = nodes.paragraph(text='Name: ')
-            paragraph.extend([nodes.literal(text=entity['name'])])
-            yield paragraph
+    return paragraph
 
-        description = entity.get('description', None)
-        if description:
-            yield nodes.paragraph(text=description)
 
-    @staticmethod
-    def create_table(entity):
-        # FIXME: Change this to directive options named headers
-        headers = ['Name', 'Type', 'Description']
+def generate_description(entity):
+    name = entity.get('name', None)
+    if name:
+        paragraph = nodes.paragraph(text='Name: ')
+        paragraph.extend([nodes.literal(text=entity['name'])])
+        yield paragraph
 
-        # TODO: Add directive options name columns to specify the data to fetch
-        # TODO: Add widths options directive
+    description = entity.get('description', None)
+    if description:
+        yield nodes.paragraph(text=description)
 
-        table = nodes.table()
 
-        max_cols = len(headers)
-        col_widths = [100 // max_cols] * max_cols
+def create_row(data):
+    row = nodes.row()
+    for datum in data:
+        row.append(nodes.entry(datum, nodes.paragraph(text=datum)))
+    return row
 
-        group = nodes.tgroup(cols=max_cols)
-        group.extend(
-            nodes.colspec(colwidth=col_width) for col_width in col_widths
+
+def create_header(data):
+    head = nodes.thead()
+    head.append(create_row(data))
+    return head
+
+
+def create_table(entity):
+    # FIXME: Change this to directive options named headers
+    headers = ['Name', 'Type', 'Length', 'Description']
+
+    # TODO: Add directive options name columns to specify the data to fetch
+    # TODO: Add widths options directive
+
+    table = nodes.table()
+
+    max_cols = len(headers)
+
+    group = nodes.tgroup(cols=max_cols)
+    table.append(group)
+
+    col_widths = [100 // max_cols] * max_cols
+    group.extend(
+        nodes.colspec(colwidth=col_width) for col_width in col_widths
+    )
+
+    group.append(create_header(headers))
+
+    body = nodes.tbody()
+    group.append(body)
+    for k, v in entity['columns']['properties'].items():
+        data = (
+            k,
+            v.get('type', ''),
+            v.get('maxLength', ''),
+            v.get('description', ''),
         )
-        table.append(group)
+        body.append(create_row(data))
 
-        # Add header
-        head = nodes.thead()
-        group.append(head)
-        row = nodes.row()
-        for header in headers:
-            row.append(nodes.entry(header, nodes.paragraph(text=header)))
-        head.append(row)
-
-        body = nodes.tbody()
-        group.append(body)
-        for k, v in entity['columns']['properties'].items():
-            data = (
-                k,
-                v.get('type', ''),
-                v.get('description', ''),
-            )
-
-            row = nodes.row()
-            for datum in data:
-                row.append(nodes.entry(datum, nodes.paragraph(text=datum)))
-            body.append(row)
-
-        return [table]
+    return table
