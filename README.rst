@@ -81,7 +81,7 @@ Determine the relationship between two entities.
 Symbol     Meaning
 =========  ===============================================
 \|         One
-\|\|       One and only one (Seems impossible in GraphViz)
+\|\|       One and only one
 \|0 / 0\|  Zero or one
 > / <      Many
 >0 / 0<    Zero or many
