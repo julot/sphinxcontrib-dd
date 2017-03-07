@@ -64,7 +64,7 @@ description  Information about the entity
 
 .. note::
 
-  Because swagger spec didn't allow unknown entry (entities),
+  Because swagger spec didn't allow unknown entry,
   it would be better if our ref able to resolve ref to another file.
 
   Example:
@@ -100,19 +100,91 @@ The syntax is ``<symbol>--<symbol>``.
 Usage
 =====
 
+
+Database Diagram
+----------------
+
 Generate database diagram using GraphViz:
 
 ::
 
   .. database-diagram:: data.yml
 
+The directive have options for ``graph``, ``node`` and ``edge``.
+But please keep a note that the options may behave strangely
+because all the options is blindly added to the dot syntax.
+
+All options name must prefixed by ``graph-``, ``nade-`` and ``edge-``
+respectively.
+
+Complete options is available `here <http://www.graphviz.org/content/attrs>`__.
+But you may find the pdf version is easier to read though this html version is
+more comprehensive.
+
+If you prefer the pdf version you can download it
+`here <http://www.graphviz.org/pdf/dotguide.pdf>`__.
+The options for node is available in appendixes A, edge in appendixes B and
+graph in appendixes C.
+
+All the options also available as config specified in ``conf.py`` by prefixing
+the options by ``database_diagram_`` and change the ``-`` into ``_`` character.
+The value in ``conf.py`` is applied to all directives but may be override by
+options in each directive.
+
+Example:
+
+Set graph label, font name and size.
+
+::
+
+  .. database-diagram:: diagram_1.yml
+    :graph-label: Database Diagram 1
+    :graph-fontsize: 18
+    :graph-fontname: Calibri
+
+  .. database-diagram:: diagram_2.yml
+    :graph-label: Database Diagram 2
+    :graph-fontsize: 18
+    :graph-fontname: Calibri
+
+  .. database-diagram:: diagram_3.yml
+    :graph-label: Database Diagram 3
+    :graph-fontsize: 20
+    :graph-fontname: Calibri
+
+But this way will be tiring fast is you have a lot of diagram.
+Time to use config value in ``conf.py``
+
+Add the config in ``conf.py``
+
+::
+
+  database_diagram_graph_fontsize = 18
+  database_diagram_graph_fontname = "Calibri"
+
+In the document you only need to override diagram 3 font size.
+
+::
+
+  .. database-diagram:: diagram_1.yml
+    :graph-label: Database Diagram 1
+
+  .. database-diagram:: diagram_2.yml
+    :graph-label: Database Diagram 2
+
+  .. database-diagram:: diagram_3.yml
+    :graph-label: Database Diagram 3
+    :graph-fontsize: 20
+
+
+Data Dictionary
+---------------
+
 Generate data dictionary table:
 
 ::
 
   .. data-dictionary:: data.yml
-
-You can also type the content as normal directive.
 
 
 TODO
