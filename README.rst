@@ -204,5 +204,5 @@ Generate data dictionary table:
 TODO
 ====
 
-1. Change entity name into h+1 depending on the context.
+1. Change entity name in data dictionary into h+1 depending on the context.
 2. Resolve $ref to another file.
