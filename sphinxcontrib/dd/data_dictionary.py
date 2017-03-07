@@ -49,7 +49,11 @@ class Directive(BaseDirective):
         for name, entity in spec['entities'].items():
             data.append(create_section(name=name))
             data.extend(generate_description(entity=entity))
-            table = create_table(entity=entity, columns=columns, headers=headers)
+            table = create_table(
+                entity=entity,
+                columns=columns,
+                headers=headers,
+            )
             data.append(table)
 
         return data
@@ -72,6 +76,8 @@ def generate_description(entity):
         paragraph.extend([nodes.literal(text=entity['name'])])
         yield paragraph
 
+    # FIXME: Description may contains markdown/reST(?) syntax
+    # http://www.sphinx-doc.org/en/stable/extdev/markupapi.html#parsing-directive-content-as-rest
     description = entity.get('description', None)
     if description:
         yield nodes.paragraph(text=description)
@@ -118,6 +124,7 @@ def create_group(columns):
 
 def create_table(entity, columns=None, headers=None, widths=None):
     # TODO: Add widths options directive
+    _ = widths
 
     group = create_group(columns=len(headers))
     group.append(create_header(data=headers))
