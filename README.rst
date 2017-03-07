@@ -104,18 +104,32 @@ Usage
 Database Diagram
 ----------------
 
-Generate database diagram using GraphViz:
+Generate database diagram using GraphViz.
 
 ::
 
   .. database-diagram:: data.yml
 
 The directive have options for ``graph``, ``node`` and ``edge``.
-But please keep a note that the options may behave strangely
-because all the options is blindly added to the dot syntax.
+All options name prefixed by ``graph-``, ``node-`` and ``edge-`` respectively.
 
-All options name must prefixed by ``graph-``, ``nade-`` and ``edge-``
-respectively.
+.. warning::
+
+  Options may behave strangely because all the value is blindly added to the
+  dot code.
+
+.. note::
+
+  Options will be applied to all ``graph``, ``node`` and ``edge`` without the
+  prefix.
+
+::
+
+  digraph DatabaseDiagram {
+    graph [option=value];
+    node [option=value];
+    edge [option=value];
+  }
 
 Complete options is available `here <http://www.graphviz.org/content/attrs>`__.
 But you may find the pdf version is easier to read though this html version is
@@ -126,7 +140,7 @@ If you prefer the pdf version you can download it
 The options for node is available in appendixes A, edge in appendixes B and
 graph in appendixes C.
 
-All the options also available as config specified in ``conf.py`` by prefixing
+All the options also can be set as config specified in ``conf.py`` by prefixing
 the options by ``database_diagram_`` and change the ``-`` into ``_`` character.
 The value in ``conf.py`` is applied to all directives but may be override by
 options in each directive.
