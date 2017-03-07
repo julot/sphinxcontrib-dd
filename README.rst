@@ -113,11 +113,6 @@ Generate database diagram using GraphViz.
 The directive have options for ``graph``, ``node`` and ``edge``.
 All options name prefixed by ``graph-``, ``node-`` and ``edge-`` respectively.
 
-.. warning::
-
-  Options may behave strangely because all the value is blindly added to the
-  dot code.
-
 .. note::
 
   Options will be applied to all ``graph``, ``node`` and ``edge`` without the
@@ -125,11 +120,26 @@ All options name prefixed by ``graph-``, ``node-`` and ``edge-`` respectively.
 
 ::
 
+  .. database-diagram:: data.yml
+    :graph-label: Database Diagram
+    :fontname: Calibri
+    :fontsize: 12
+
+Label will be applied to graph only, font name and size will applied to all
+(graph, node and edge).
+
+::
+
   digraph DatabaseDiagram {
-    graph [option=value];
-    node [option=value];
-    edge [option=value];
+    graph [label="Database Diagram", fontname="Calibri",  fontsize=12];
+    node [fontname="Calibri",  fontsize=12];
+    edge [fontname="Calibri",  fontsize=12];
   }
+
+.. warning::
+
+  Options may behave strangely because all the value will be blindly added to
+  the dot code.
 
 Complete options is available `here <http://www.graphviz.org/content/attrs>`__.
 But you may find the pdf version is easier to read though this html version is
@@ -206,4 +216,5 @@ TODO
 
 1. Change entity name in data dictionary into h+1 depending on the context.
 2. Resolve $ref to another file.
-3. 
+3. Change output format from ``graphviz_output_format = 'svg'`` to
+  ``database_diagram_output_format = 'svg'``
