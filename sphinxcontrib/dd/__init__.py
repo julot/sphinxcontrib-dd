@@ -15,6 +15,13 @@ def setup(app):
 
     app.add_directive('data-dictionary', data_dictionary.Directive)
 
+    app.add_config_value('database_diagram_graph_fontname', '', 'env')
+    app.add_config_value('database_diagram_graph_fontsize', '', 'env')
+    app.add_config_value('database_diagram_graph_label', '', 'env')
+
+    app.add_config_value('database_diagram_node_fontname', '', 'env')
+    app.add_config_value('database_diagram_node_fontsize', '', 'env')
+
     app.add_node(
         database_diagram.Node,
         html=(database_diagram.visit_html, skip),
@@ -23,4 +30,5 @@ def setup(app):
         man=(skip, skip),
         texinfo=(skip, skip),
     )
+
     app.add_directive('database-diagram', database_diagram.Directive)
