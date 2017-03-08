@@ -1,7 +1,10 @@
+import io
 import collections
 import jsonschema
 
 import yaml.resolver
+
+from yaml import load as load_yaml
 
 
 # This is taken from sphinxcontrib-openapi
@@ -51,3 +54,15 @@ def resolve_refs(uri, spec):
         return node
 
     return _do_resolve(spec)
+
+
+def load(path):
+    # Read the file using encoding passed to the directive or fallback to
+    # the one specified in Sphinx's config.
+    # encoding = self.options.get('encoding', env.config.source_encoding)
+    with io.open(path, 'rt', encoding='utf-8') as stream:
+        spec = load_yaml(stream, Loader)
+    # FIXME: Resolve from external file
+    spec = resolve_refs('file://%s' % path, spec)
+
+    return spec

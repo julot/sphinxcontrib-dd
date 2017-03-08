@@ -1,11 +1,8 @@
-import io
-
 from docutils import nodes
 from docutils.parsers.rst import directives
-from yaml import load as load_yaml
 from sphinx.util.compat import Directive as BaseDirective
 
-from . import yaml
+from sphinxcontrib.dd import yaml
 
 
 class Directive(BaseDirective):
@@ -36,13 +33,7 @@ class Directive(BaseDirective):
         # That means the document will be rebuilt if the file is changed.
         env.note_dependency(rel_path)
 
-        # Read the file using encoding passed to the directive or fallback to
-        # the one specified in Sphinx's config.
-        encoding = self.options.get('encoding', env.config.source_encoding)
-        with io.open(path, 'rt', encoding=encoding) as stream:
-            spec = load_yaml(stream, yaml.Loader)
-        # FIXME: Resolve from external file
-        spec = yaml.resolve_refs('file://%s' % path, spec)
+        spec = yaml.load(path)
 
         data = []
 
