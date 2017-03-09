@@ -15,12 +15,9 @@ def setup(app):
 
     app.add_directive('data-dictionary', data_dictionary.Directive)
 
-    app.add_config_value('database_diagram_graph_fontname', '', 'env')
-    app.add_config_value('database_diagram_graph_fontsize', '', 'env')
-    app.add_config_value('database_diagram_graph_label', '', 'env')
-
-    app.add_config_value('database_diagram_node_fontname', '', 'env')
-    app.add_config_value('database_diagram_node_fontsize', '', 'env')
+    for option in database_diagram.Directive.option_spec:
+        config = 'database_diagram_{0}'.format(option.replace('-', '_'))
+        app.add_config_value(config, None, 'env')
 
     app.add_node(
         database_diagram.Node,
