@@ -1,3 +1,6 @@
+import re
+
+from collections import OrderedDict
 from docutils import nodes
 from docutils.parsers.rst import directives
 from sphinx.util.compat import Directive as BaseDirective
@@ -6,16 +9,150 @@ from sphinx.ext.graphviz import render_dot_html, render_dot_latex
 from sphinxcontrib.dd import yaml
 
 
+def serialize(dictionary):
+    """
+    Turn dictionary into argument like string.
+
+    """
+
+    data = []
+    for key, value in dictionary.items():
+        data.append('{0}="{1}"'.format(key, value))
+    return ', '.join(data)
+
+
 class Graph(object):
 
-    def __init__(self, spec, graph, node, edge):
+    def __init__(self, spec, graph, node, edge=None):
         self.spec = spec
         self.graph = graph
         self.node = node
         self.edge = edge
 
     def dot(self):
-        return sample
+        data = [
+            'graph [{0}]'.format(serialize(self.graph)),
+            'node [{0}]'.format(serialize(self.node)),
+            'edge [{0}]'.format(serialize(self.edge)),
+        ]
+
+        for entity, spec in self.spec['entities'].items():
+            data.append(Entity(entity, spec).dot())
+
+        for relationship in self.spec['relationships']:
+            data.append(Relationship(relationship).dot())
+
+        return 'digraph DatabaseDiagram {{\n{0}\n}}'.format(';\n'.join(data))
+
+
+class Entity(object):
+
+    def __init__(self, name, spec):
+        self.name = name
+        self.spec = spec
+
+    def dot(self):
+        labels = [
+            '<table border="0">',
+            '<tr>',
+            '<td><b>{0}</b></td>'.format(self.name),
+            '</tr>',
+
+            '<hr />',
+
+            '<tr>',
+            '<td align="left">',
+            '<table border="0" cellspacing="0">',
+        ]
+
+        for name, spec in self.spec['columns']['properties'].items():
+            labels.append(Property(name, spec).dot())
+
+        labels += [
+            '</table>',
+            '</td>',
+            '</tr>',
+            '</table>',
+        ]
+
+        return '"{name}" [label=<{label}>]'.format(
+            name=self.name,
+            label=''.join(labels),
+        )
+
+
+class Property(object):
+
+    def __init__(self, name, spec):
+        self.name = name
+        self.spec = spec
+
+    @property
+    def type(self):
+        kind = self.spec.get('type', '')
+        if not kind:
+            return ''
+
+        length = self.spec.get('maxLength', '')
+        if not length:
+            return kind
+
+        return '{kind}({length})'.format(kind=kind, length=length)
+
+    def dot(self):
+        data = [
+            '<tr>',
+            '<td align="left">{0}</td>'.format(self.name),
+            '<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>',
+            '<td align="right">{0}</td>'.format(self.type),
+            '</tr>',
+        ]
+        return ''.join(data)
+
+
+class Relationship(object):
+
+    pattern = re.compile(r'^(.*) ([>|0]{1,2})?--([0|<]{1,2}) (.*)$')
+    arrows = {
+        '0': 'odot',
+        '|': 'tee',
+        '>': 'crow',
+        '<': 'crow',
+    }
+
+    def __init__(self, spec):
+        self.spec = spec
+
+    def dot(self):
+        matches = self.pattern.match(self.spec)
+        if not matches:
+            return ''
+
+        heads = []
+        for index, arrow in enumerate(matches.group(3)[::-1]):
+            if index == 0 and arrow == '|':
+                heads.append('none')
+            heads.append(self.arrows[arrow])
+
+        tails = []
+        for index, arrow in enumerate(matches.group(2)):
+            if index == 0 and arrow == '|':
+                tails.append('none')
+            tails.append(self.arrows[arrow])
+
+        options = OrderedDict(
+            dir='both',
+            arrowhead=''.join(heads),
+            arrowtail=''.join(tails),
+        )
+
+        node = '"{0}" -> "{1}" [{2}]'.format(
+            matches.group(1),
+            matches.group(4),
+            serialize(options),
+        )
+
+        return node
 
 
 class Node(nodes.General, nodes.Element):
@@ -31,9 +168,15 @@ class Directive(BaseDirective):
         'graph-fontname': directives.unchanged,
         'graph-fontsize': directives.unchanged,
         'graph-label': directives.unchanged,
+        'graph-margin': directives.unchanged,
+        'graph-nodesep': directives.unchanged,
+        'graph-ranksep': directives.unchanged,
 
         'node-fontname': directives.unchanged,
         'node-fontsize': directives.unchanged,
+        'node-shape': directives.unchanged,
+        'node-style': directives.unchanged,
+        'node-margin': directives.unchanged,
     }
 
     def run(self):
@@ -52,13 +195,20 @@ class Directive(BaseDirective):
         
         node['graph'] = {'margin': 0, 'nodesep': .5, 'ranksep': 1}
         node['node'] = {'shape': 'solid', 'style': 'rounded', 'margin': 0}
-        node['edge'] = {'name': 'edge'}
+        node['edge'] = {
+            # 'arrowhead': 'onormal',
+            # 'arrowtail': 'onormal',
+        }
 
         for option in self.option_spec:
             group, attr = option.split('-')
             value = self.options.get(
-                group,
-                getattr(config, 'database_diagram_%s' % option, ''),
+                option,
+                getattr(
+                    config,
+                    'database_diagram_{0}'.format(option.replace('-', '_')),
+                    None,
+                ),
             )
             if value:
                 node[group][attr] = value
@@ -100,85 +250,3 @@ def visit_latex(self, node):
         prefix='db-diagram',
     )
     raise nodes.SkipNode
-
-
-sample = '''
-digraph DatabaseDiagram {
-
-    graph [
-        label="Database Diagram",
-        labelloc="t",
-        labeljust="c",
-        charset="UTF-8",
-        rankdir="TB",
-        margin=0,
-        ratio=auto,
-        nodesep=.5,
-        ranksep="1",
-        fontsize=18,
-        fontname="Calibri",
-    ];
-
-    node [
-        shape="solid",
-        style="rounded",
-        layout=dot,
-        margin=0,
-        fontname="Calibri",
-        fontsize=12,
-    ];
-
-    "f o o" [
-        label=<
-            <table border="0">
-                <tr>
-                    <td><b>Foo</b></td>
-                </tr>
-                <hr />
-                <tr>
-                    <td align="left"><table border="0" cellspacing="0">
-                        <tr>
-                            <td align="left">id</td>
-                            <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                            <td align="right">integer</td>
-                        </tr>
-                        <tr>
-                            <td align="left">name</td>
-                            <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                            <td align="right">varchar(255)</td>
-                        </tr>
-                    </table></td>
-                </tr>
-            </table>
-        >,
-    ];
-
-    bar [
-        label=<
-            <table border="0">
-                <tr>
-                    <td><b>Bar</b></td>
-                </tr>
-                <hr />
-                <tr>
-                    <td align="left"><table border="0" cellspacing="0">
-                        <tr>
-                            <td align="left">id</td>
-                            <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                            <td align="right">integer</td>
-                        </tr>
-                        <tr>
-                            <td align="left">name</td>
-                            <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                            <td align="right">varchar(255)</td>
-                        </tr>
-                    </table></td>
-                </tr>
-            </table>
-        >,
-    ];
-
-    "f o o" -> bar [dir=both, arrowhead=crowodot, arrowtail=noneteetee];
-
-}
-'''
