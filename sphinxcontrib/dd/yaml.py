@@ -63,6 +63,6 @@ def load(path):
     with io.open(path, 'rt', encoding='utf-8') as stream:
         spec = load_yaml(stream, Loader)
     # FIXME: Resolve from external file
-    spec = resolve_refs('file://%s' % path, spec)
+    spec = resolve_refs('file://{0}'.format(path), spec)
 
     return spec
