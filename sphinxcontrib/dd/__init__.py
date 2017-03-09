@@ -16,6 +16,9 @@ def setup(app):
     app.add_directive('data-dictionary', data_dictionary.Directive)
 
     for option in database_diagram.Directive.option_spec:
+        if option in database_diagram.Directive.private_options:
+            continue
+
         config = 'database_diagram_{0}'.format(option.replace('-', '_'))
         app.add_config_value(config, None, 'env')
 
