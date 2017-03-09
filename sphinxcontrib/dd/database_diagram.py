@@ -23,11 +23,12 @@ def serialize(dictionary):
 
 class Graph(object):
 
-    def __init__(self, spec, graph, node, edge=None):
+    def __init__(self, spec, graph, node, edge=None, root=None):
         self.spec = spec
         self.graph = graph
         self.node = node
-        self.edge = edge
+        self.edge = edge or {}
+        self.root = root or {}
 
     def dot(self):
         data = [
@@ -41,6 +42,14 @@ class Graph(object):
 
         for relationship in self.spec['relationships']:
             data.append(Relationship(relationship).dot())
+
+        for key, value in self.root.items():
+            if key == 'samerank':
+                template = '{{rank="same"; {0};}}'
+                groups = [v.strip() for v in value.split(',')]
+                for group in groups:
+                    entities = ['"{0}"'.format(v) for v in group.split()]
+                    data.append(template.format('; '.join(entities)))
 
         return 'digraph DatabaseDiagram {{\n{0}\n}}'.format(';\n'.join(data))
 
@@ -146,6 +155,9 @@ class Relationship(object):
             arrowtail=''.join(tails),
         )
 
+        # if matches.group(1) == 'Test1' and matches.group(4) == 'Test5':
+        #     options['minlen'] = 2
+
         node = '"{0}" -> "{1}" [{2}]'.format(
             matches.group(1),
             matches.group(4),
@@ -177,7 +189,11 @@ class Directive(BaseDirective):
         'node-shape': directives.unchanged,
         'node-style': directives.unchanged,
         'node-margin': directives.unchanged,
+
+        'root-samerank': directives.unchanged,
     }
+
+    private_options = ['root-samerank']
 
     def run(self):
         env = self.state.document.settings.env
@@ -193,12 +209,23 @@ class Directive(BaseDirective):
         node = Node()
         node['spec'] = yaml.load(path)
         
-        node['graph'] = {'margin': 0, 'nodesep': .5, 'ranksep': 1}
-        node['node'] = {'shape': 'solid', 'style': 'rounded', 'margin': 0}
+        node['graph'] = {
+            'margin': 0,
+            'nodesep': .75,
+            'ranksep': .75,
+            'rankdir': 'LR',
+        }
+        node['node'] = {
+            'shape': 'solid',
+            'style': 'rounded',
+            'margin': 0,
+            # 'layout': 'neato',
+        }
         node['edge'] = {
             # 'arrowhead': 'onormal',
             # 'arrowtail': 'onormal',
         }
+        node['root'] = {}
 
         for option in self.option_spec:
             group, attr = option.split('-')
@@ -222,6 +249,7 @@ def visit_html(self, node):
         graph=node['graph'],
         node=node['node'],
         edge=node['edge'],
+        root=node['root'],
     )
     render_dot_html(
         self=self,
@@ -241,6 +269,7 @@ def visit_latex(self, node):
         graph=node['graph'],
         node=node['node'],
         edge=node['edge'],
+        root=node['root'],
     )
     render_dot_latex(
         self=self,
