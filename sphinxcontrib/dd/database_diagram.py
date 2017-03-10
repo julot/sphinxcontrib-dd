@@ -180,6 +180,8 @@ class Directive(BaseDirective):
         'graph-fontname': directives.unchanged,
         'graph-fontsize': directives.unchanged,
         'graph-label': directives.unchanged,
+        'graph-labeljust': directives.unchanged,
+        'graph-labelloc': directives.unchanged,
         'graph-margin': directives.unchanged,
         'graph-nodesep': directives.unchanged,
         'graph-ranksep': directives.unchanged,
