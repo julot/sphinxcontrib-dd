@@ -37,15 +37,15 @@ entities:
       $ref: '#/definitions/User'
   Role:
     name: roles
-    description: Table to stores roles.
+    description: Table to stores roles information.
     columns:
       $ref: '#/definitions/Role'
   UserRole:
     name: users_roles
-    description: Table to stores user roles.
+    description: Table to stores roles of user.
     columns:
       $ref: '#/definitions/UserRole'
 
 relationships:
-  - User |--0< UserRole
-  - Role |--0< UserRole
+  - User ||--0< UserRole
+  - Role ||--0< UserRole
