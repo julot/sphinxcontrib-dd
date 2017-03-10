@@ -40,7 +40,7 @@ class Graph(object):
         for entity, spec in self.spec['entities'].items():
             data.append(Entity(entity, spec).dot())
 
-        for relationship in self.spec['relationships']:
+        for relationship in self.spec.get('relationships', {}):
             data.append(Relationship(relationship).dot())
 
         for key, value in self.root.items():
@@ -190,11 +190,11 @@ class Directive(BaseDirective):
         'node-fontsize': directives.unchanged,
         'node-shape': directives.unchanged,
         'node-style': directives.unchanged,
-        'node-margin': directives.unchanged,
 
         'root-samerank': directives.unchanged,
     }
 
+    # Values to be excluded from database_diagram_ config
     private_options = ['root-samerank']
 
     def run(self):
@@ -218,15 +218,11 @@ class Directive(BaseDirective):
             'rankdir': 'LR',
         }
         node['node'] = {
-            'shape': 'solid',
+            'shape': 'box',
             'style': 'rounded',
             'margin': 0,
-            # 'layout': 'neato',
         }
-        node['edge'] = {
-            # 'arrowhead': 'onormal',
-            # 'arrowtail': 'onormal',
-        }
+        node['edge'] = {}
         node['root'] = {}
 
         for option in self.option_spec:
