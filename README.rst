@@ -133,9 +133,10 @@ Database Diagram
 
 This extension is inspired by
 `sphinx_erdiagram <https://pypi.python.org/pypi/sphinx_erdiagram>`__.
+
 But the extension has been heavily design for japanese language document.
-So the font looks ugly in english document.
-I also want to reuse the Swagger specification file used to define the REST
+So it looks rather ugly in english document to the font it use.
+And I also want to reuse the Swagger specification file used to define the REST
 API.
 
 ::
