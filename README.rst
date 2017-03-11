@@ -74,21 +74,6 @@ Example:
         $ref: '#/definitions/UserRole'
 
 
-.. note::
-
-  Because swagger spec didn't allow unknown entry,
-  it would be better if our ref able to resolve ref to another file.
-
-  Example:
-
-  ``$ref: 'part.yml#/definitions/User``
-
-  On second thought...
-
-  It seems resolve ref is rather complicated.
-  Maybe I should try another approach.
-
-
 relationships
 -------------
 
@@ -134,7 +119,8 @@ Database Diagram
 This extension is inspired by
 `sphinx_erdiagram <https://pypi.python.org/pypi/sphinx_erdiagram>`__.
 
-But the extension has been heavily design for japanese language document.
+But unfortunately,
+the extension has been heavily design for japanese language document.
 So it looks rather ugly in english document due to the font it use.
 And I also want to reuse the Swagger specification file used to define the REST
 API.
@@ -201,10 +187,9 @@ node-style
   More `here <http://www.graphviz.org/doc/info/shapes.html#d:style>`__.
 
 root-samerank
-  This option tells GraphViz that some node should be placed in the same
-  rank.
+  This option tells GraphViz that some node should be in the same rank.
 
-  This options is comma separated value format.
+  This options is in comma separated value format.
 
   Before everything else, please remember that:
 
@@ -232,7 +217,7 @@ root-samerank
   ::
 
     +---+          +---+
-    | B | ||----0< | A |
+    | B | >0----|| | A |
     +---+          +---+
 
   Remember that rank direction is from left to right.
@@ -309,12 +294,12 @@ root-samerank
   First remember that this option is in comma separated value format.
   This means that the option will produce to values: ``A B`` and ``C D``.
 
-  These two values force A and B to be in the same column
-  and C and D to be in the same column too.
-  But because we didn't specify B and C to be in the same column,
-  C nodes is placed in the right of the B node.
+  These two values force A and B to be in the same rank
+  and C and D to be in the same rank too.
+  But because we didn't specify B and C to be in the same rank,
+  C node is placed in the right of the B node.
 
-  If you want node D placed at the top of node C,
+  If you want D node placed at the top of C node,
   you can simply change the relationship into ``D >0--|| C``.
 
 Now, if you understand dot language you may now realized that ``graph-*`` and
@@ -330,7 +315,7 @@ But please remember that some attributes may unavailable for modification.
 
 Complete options is available `here <http://www.graphviz.org/content/attrs>`__.
 But you may find the pdf version is easier to read,
-though this html version is more comprehensive.
+though the html version is more comprehensive.
 
 If you prefer the pdf version you can download it
 `here <http://www.graphviz.org/pdf/dotguide.pdf>`__.
@@ -342,7 +327,15 @@ with ``database_diagram_`` and change the ``-`` into ``_`` character.
 The value in ``conf.py`` is applied to all directives but will be override by
 options in the directive.
 
-Please note that these options is not applicable as config:
+For example you want to set ``node-fontname`` to "Calibri" for all diagram.
+
+In ``conf.py``:
+
+::
+
+  database_diagram_node_fontname = "Calibri"
+
+Please note that this options is not available as config:
 
 - root-samerank
 
