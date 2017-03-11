@@ -364,7 +364,6 @@ Generate data dictionary:
 TODO
 ====
 
-1. Change entity name in data dictionary into h+1 depending on the context.
-2. Resolve $ref to another file.
-3. Change output format from ``graphviz_output_format = 'svg'`` to
+#. Change table name in data dictionary into h+1 depending on the context.
+#. Change output format from ``graphviz_output_format = 'svg'`` to
   ``database_diagram_output_format = 'svg'``
