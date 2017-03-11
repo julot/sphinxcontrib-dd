@@ -135,7 +135,7 @@ This extension is inspired by
 `sphinx_erdiagram <https://pypi.python.org/pypi/sphinx_erdiagram>`__.
 
 But the extension has been heavily design for japanese language document.
-So it looks rather ugly in english document to the font it use.
+So it looks rather ugly in english document due to the font it use.
 And I also want to reuse the Swagger specification file used to define the REST
 API.
 
@@ -200,17 +200,17 @@ node-style
 
   More `here <http://www.graphviz.org/doc/info/shapes.html#d:style>`__.
 
-root-samecolumns
+root-samerank
   This option tells GraphViz that some node should be placed in the same
-  column in comma separated value format.
+  rank.
+
+  This options is comma separated value format.
 
   Before everything else, please remember that:
 
+  - Rank direction is from left to right.
   - The placement of the nodes is heavily influence by how you define the
     relationship.
-  - Nodes without relationship will be placed in the first column and ordered
-    from top to bottom.
-  - Nodes with relationship will be ordered from left to rigt in the same row.
   - To completely understand this options,
     you must understand how GraphViz's DiGraph works.
 
@@ -224,6 +224,9 @@ root-samecolumns
     | A | ||----0< | B |
     +---+          +---+
 
+  If you understand dot syntax,
+  the relationship above translated into ``A -> B``.
+
   While relationship as ``B >0--|| A`` will produce:
 
   ::
@@ -232,17 +235,17 @@ root-samecolumns
     | B | ||----0< | A |
     +---+          +---+
 
-  Remember that the nodes with relationship will be ordered from left to right.
+  Remember that rank direction is from left to right.
 
-  But for relationship ``A ||--0< B`` with ``root-samecolumns`` option in the
+  But for relationship ``A ||--0< B`` with ``root-samerank`` option in the
   directive like this:
 
   ::
 
     .. database-diagram:: external.yml
-      :root-samecolumns: A B
+      :root-samerank: A B
 
-  It will forced the nodes to be in the same column:
+  It will forced the nodes to be in the same rank:
 
   ::
 
@@ -303,8 +306,7 @@ root-samecolumns
 
   Let's see how this works.
 
-  First remember that this option is in comma separated value format as stated
-  in the very beginning.
+  First remember that this option is in comma separated value format.
   This means that the option will produce to values: ``A B`` and ``C D``.
 
   These two values force A and B to be in the same column
@@ -312,7 +314,10 @@ root-samecolumns
   But because we didn't specify B and C to be in the same column,
   C nodes is placed in the right of the B node.
 
-If you understand dot language you may now realized that ``graph-*`` and
+  If you want node D placed at the top of node C,
+  you can simply change the relationship into ``D >0--|| C``.
+
+Now, if you understand dot language you may now realized that ``graph-*`` and
 ``node-*`` options is just a shameless rip-off from GrahpViz.
 That's completely correct.
 I'm too lazy to define my own options and conversions.
@@ -339,7 +344,7 @@ options in the directive.
 
 Please note that these options is not applicable as config:
 
-- root-samecolumns
+- root-samerank
 
 .. note::
 
