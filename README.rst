@@ -366,6 +366,7 @@ For me, that makes the picture ugly with a lot of line criss-crossing
 everywhere.
 
 In my case I simply want to know the relationship between tables.
+Because the foreign key is already obvious to me.
 Plain and simple!
 
 
