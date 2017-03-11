@@ -174,6 +174,7 @@ class Node(nodes.General, nodes.Element):
 class Directive(BaseDirective):
 
     required_arguments = 1  # Path to yml file
+    optional_arguments = 1  # Path to yml definition file
     final_argument_whitespace = True
     has_content = False
     option_spec = {
@@ -204,12 +205,23 @@ class Directive(BaseDirective):
 
         rel_path, path = env.relfn2path(directives.path(self.arguments[0]))
 
+        def_rel_path = ''
+        def_path = ''
+        try:
+            def_rel_path, def_path = env.relfn2path(
+                directives.path(self.arguments[1])
+            )
+        except IndexError:
+            pass
+
         # Add the file as a dependency to the current document.
         # That means the document will be rebuilt if the file is changed.
         env.note_dependency(rel_path)
+        if def_rel_path:
+            env.note_dependency(def_rel_path)
 
         node = Node()
-        node['spec'] = yaml.load(path)
+        node['spec'] = yaml.load(path=path, definition_path=def_path)
         
         node['graph'] = {
             'margin': 0,

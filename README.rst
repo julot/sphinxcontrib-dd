@@ -40,6 +40,41 @@ definitions
 This is definitions as specified by Swagger
 `here <http://swagger.io/specification/#definitionsObject>`__.
 
+Example:
+
+::
+
+  definitions:
+    Identity:
+      type: integer
+      format: int64
+      minimum: 1
+
+    User:
+      properties:
+        id:
+          $ref: '#/definitions/Identity'
+        name:
+          type: nvarchar
+          maxLength: 255
+
+    Role:
+      properties:
+        id:
+          $ref: '#/definitions/Identity'
+        name:
+          type: nvarchar
+          maxLength: 255
+
+    UserRole:
+      properties:
+        id:
+          $ref: '#/definitions/Identity'
+        user_id:
+          $ref: '#/definitions/Identity'
+        role_id:
+          $ref: '#/definitions/Identity'
+
 
 tables
 ------
@@ -104,13 +139,24 @@ Example:
 Usage
 =====
 
-This extension add these directives:
+This extension add two directives:
 
-**.. database-diagram:: path**
+**.. database-diagram:: path [path_to_definition]**
   Embed database diagram produced by GraphViz.
 
-**.. data-dictionary:: path**
+**.. data-dictionary:: path [path_to_definition]**
   Embed data dictionary in table format.
+
+path
+  Path to yml file.
+
+path_to_definition
+  Optional path to yml file that contains the definitions.
+
+  If you already have a swagger spec file used to define your REST API,
+  you can reuse the file as is without modification.
+
+  In the background I simply combine the two files into one.
 
 
 Database Diagram

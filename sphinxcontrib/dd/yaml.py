@@ -1,6 +1,8 @@
 import io
+import os
 import collections
 import jsonschema
+import tempfile
 
 import yaml.resolver
 
@@ -56,13 +58,23 @@ def resolve_refs(uri, spec):
     return _do_resolve(spec)
 
 
-def load(path):
-    # Read the file using encoding passed to the directive or fallback to
-    # the one specified in Sphinx's config.
-    # encoding = self.options.get('encoding', env.config.source_encoding)
-    with io.open(path, 'rt', encoding='utf-8') as stream:
+def load(path, definition_path=None):
+    f = tempfile.NamedTemporaryFile(mode='w', encoding='UTF-8', delete=False)
+
+    with open(path, encoding='utf-8') as i:
+        f.write(i.read())
+
+    if definition_path:
+        f.write('\n')
+        with open(definition_path, encoding='utf-8') as i:
+            f.write(i.read())
+
+    f.close()
+
+    with io.open(f.name, 'rt', encoding='utf-8') as stream:
         spec = load_yaml(stream, Loader)
-    # FIXME: Resolve from external file
-    spec = resolve_refs('file://{0}'.format(path), spec)
+    spec = resolve_refs('file://{0}'.format(f.name), spec)
+
+    os.unlink(f.name)
 
     return spec
