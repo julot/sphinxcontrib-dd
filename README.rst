@@ -350,8 +350,9 @@ Please note that this options is not available as config:
   If you knows how to do that,
   please let me know or add a pull request.
 
-Some of you may wondering why my database diagram end up like that.
-There are some reasons for this.
+
+Disclaimer
+~~~~~~~~~~
 
 First of all, I don't like ER Diagram.
 To me, the picture is so chaotic and the concept is too abstract.
@@ -361,10 +362,11 @@ It also a little hard to see the connection to the database implementation.
 I always prefer database viewer like in Ms Access or PhpMyAdmin.
 But I don't quite like the usage of foreign keys to draw the relationship in
 them.
-That makes the relationship unnecessary complex.
+For me, that makes the picture ugly with a lot of line criss-crossing
+everywhere.
 
 In my case I simply want to know the relationship between tables.
-Because the foreign key already obvious to me.
+Plain and simple!
 
 
 Data Dictionary
