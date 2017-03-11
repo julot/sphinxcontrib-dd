@@ -37,7 +37,7 @@ class Graph(object):
             'edge [{0}]'.format(serialize(self.edge)),
         ]
 
-        for entity, spec in self.spec['entities'].items():
+        for entity, spec in self.spec['tables'].items():
             data.append(Entity(entity, spec).dot())
 
         for relationship in self.spec.get('relationships', {}):

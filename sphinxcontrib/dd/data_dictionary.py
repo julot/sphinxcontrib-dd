@@ -37,7 +37,7 @@ class Directive(BaseDirective):
 
         data = []
 
-        for name, entity in spec['entities'].items():
+        for name, entity in spec['tables'].items():
             data.append(create_section(name=name))
             data.extend(generate_description(entity=entity))
             table = create_table(
