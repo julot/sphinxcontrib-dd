@@ -256,14 +256,14 @@ root-samerank
       - B >0--|| C
       - C ||--0< D
 
-  Without ``root-samecolumns`` option,
+  Without ``root-samerank`` option,
   the nodes will be placed right next to each other resulting in one row.
   But if you set the option like this:
 
   ::
 
     .. database-diagram:: external.yml
-      :root-samecolumns: A B, C D
+      :root-samerank: A B, C D
 
   It will produces diagram like this:
 
@@ -302,8 +302,8 @@ root-samerank
   If you want D node placed at the top of C node,
   you can simply change the relationship into ``D >0--|| C``.
 
-Now, if you understand dot language you may now realized that ``graph-*`` and
-``node-*`` options is just a shameless rip-off from GrahpViz.
+Now, if you understand dot language you may already realized that ``graph-*``
+and ``node-*`` options is just a shameless rip-off from GrahpViz attribute.
 That's completely correct.
 I'm too lazy to define my own options and conversions.
 Beside I strongly believe that we should not reinvent the wheel,
