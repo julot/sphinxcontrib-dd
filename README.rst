@@ -351,25 +351,6 @@ Please note that this options is not available as config:
   please let me know or add a pull request.
 
 
-Disclaimer
-~~~~~~~~~~
-
-First of all, I don't like ER Diagram.
-To me, the picture is so chaotic and the concept is too abstract.
-Not to mentions that you need a lof of space for the diagram.
-It also a little hard to see the connection to the database implementation.
-
-I always prefer database viewer like in Ms Access or PhpMyAdmin.
-But I don't quite like the usage of foreign keys to draw the relationship in
-them.
-For me, that makes the picture ugly with a lot of line criss-crossing
-everywhere.
-
-In my case I simply want to know the relationship between tables.
-Because the foreign key is already obvious to me.
-Plain and simple!
-
-
 Data Dictionary
 ---------------
 
