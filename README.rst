@@ -350,20 +350,21 @@ Please note that this options is not available as config:
   If you knows how to do that,
   please let me know or add a pull request.
 
-Rationality
-  Some of you may wondering why my database diagram end up like that.
-  There are some reasons for this.
+Some of you may wondering why my database diagram end up like that.
+There are some reasons for this.
 
-  First of all, I don't like ER Diagram.
-  To me, the picture is so chaotic and the concept is too abstract.
-  Not to mentions that you need a lof of space for the diagram.
-  It also a little hard to see the connection to the database implementation.
+First of all, I don't like ER Diagram.
+To me, the picture is so chaotic and the concept is too abstract.
+Not to mentions that you need a lof of space for the diagram.
+It also a little hard to see the connection to the database implementation.
 
-  I always prefer database viewer like in Ms Access or PhpMyAdmin.
-  But I don't quite like the usage of foreign keys to draw the relationship in
-  them.
+I always prefer database viewer like in Ms Access or PhpMyAdmin.
+But I don't quite like the usage of foreign keys to draw the relationship in
+them.
+That makes the relationship unnecessary complex.
 
-  In my case I simply want to know the relationship between table.
+In my case I simply want to know the relationship between tables.
+Because the foreign key already obvious to me.
 
 
 Data Dictionary
