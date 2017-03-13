@@ -460,5 +460,5 @@ TODO
 ====
 
 #. Change table name in data dictionary into h+1 depending on the context.
-#. Change output format from ``graphviz_output_format = 'svg'`` to
-  ``database_diagram_output_format = 'svg'``
+#. Change output format from ``graphviz_output_format = 'svg'``
+  to ``database_diagram_output_format = 'svg'``
