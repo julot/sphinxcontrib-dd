@@ -289,3 +289,31 @@ def visit_latex(self, node):
         prefix='db-diagram',
     )
     raise nodes.SkipNode
+
+
+def skip(self, node):
+    _ = self
+    _ = node
+    raise nodes.SkipNode
+
+
+def setup(app):
+    app.setup_extension('sphinx.ext.graphviz')
+
+    for option in Directive.option_spec:
+        if option in Directive.private_options:
+            continue
+
+        config = 'database_diagram_{0}'.format(option.replace('-', '_'))
+        app.add_config_value(config, None, 'env')
+
+    app.add_node(
+        Node,
+        html=(visit_html, skip),
+        latex=(visit_latex, skip),
+        text=(skip, skip),
+        man=(skip, skip),
+        texinfo=(skip, skip),
+    )
+
+    app.add_directive('database-diagram', Directive)
