@@ -5,6 +5,14 @@ from sphinx.util.compat import Directive as BaseDirective
 from . import yaml
 
 
+def string_list(argument):
+    if ',' in argument:
+        entries = argument.split(',')
+    else:
+        entries = argument.split()
+    return [entry.strip() for entry in entries]
+
+
 class Directive(BaseDirective):
 
     required_arguments = 1  # Path to yml file
@@ -13,20 +21,36 @@ class Directive(BaseDirective):
     has_content = False
 
     option_spec = {
-        'encoding': directives.encoding,
-        'class': directives.class_option,
+        'widths': directives.positive_int_list,
+        'headers': string_list,
+        'columns': string_list,
     }
 
     def run(self):
         env = self.state.document.settings.env
-        # app = env.app
-        # config = app.config
+        app = env.app
+        config = app.config
+
+        widths = self.options.get(
+            'widths',
+            getattr(config, 'data_dictionary_{0}'.format('widths')),
+        )
+
+        headers = self.options.get(
+            'headers',
+            getattr(config, 'data_dictionary_{0}'.format('headers')),
+        )
+
+        columns = self.options.get(
+            'columns',
+            getattr(config, 'data_dictionary_{0}'.format('columns')),
+        )
 
         # FIXME: Change this to options to specify header label
-        headers = ['Name', 'Type', 'Length', 'Description']
+        # headers = ['Name', 'Type', 'Length', 'Description']
 
         # FIXME: Change to options to specify the data to fetch
-        columns = ['name', 'type', 'maxLength', 'description']
+        # columns = ['name', 'type', 'maxLength', 'description']
 
         rel_path, path = env.relfn2path(directives.path(self.arguments[0]))
 
@@ -57,6 +81,7 @@ class Directive(BaseDirective):
                 entity=entity,
                 columns=columns,
                 headers=headers,
+                widths=widths,
             )
             data.append(table)
 
@@ -115,25 +140,41 @@ def create_body(entity, columns):
     return body
 
 
-def create_group(columns):
-    group = nodes.tgroup(cols=columns)
+def create_group(widths):
+    group = nodes.tgroup(cols=len(widths))
 
-    col_widths = [100 // columns] * columns
     group.extend(
-        nodes.colspec(colwidth=col_width) for col_width in col_widths
+        nodes.colspec(colwidth=width) for width in widths
     )
 
     return group
 
 
 def create_table(entity, columns=None, headers=None, widths=None):
-    # TODO: Add widths options directive
-    _ = widths
-
-    group = create_group(columns=len(headers))
+    group = create_group(widths)
     group.append(create_header(data=headers))
     group.append(create_body(entity=entity, columns=columns))
 
-    table = nodes.table()
+    table = nodes.table(classes=['data-dictionary'])
     table.append(group)
     return table
+
+
+def setup(app):
+    app.add_config_value(
+        'data_dictionary_{0}'.format('widths'),
+        [1, 1, 1, 4],
+        'env',
+    )
+    app.add_config_value(
+        'data_dictionary_{0}'.format('headers'),
+        ['Name', 'Type', 'Length', 'Description'],
+        'env',
+    )
+    app.add_config_value(
+        'data_dictionary_{0}'.format('columns'),
+        ['name', 'type', 'maxLength', 'description'],
+        'env',
+    )
+
+    app.add_directive('data-dictionary', Directive)
