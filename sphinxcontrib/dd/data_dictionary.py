@@ -2,7 +2,7 @@ from docutils import nodes
 from docutils.parsers.rst import directives
 from sphinx.util.compat import Directive as BaseDirective
 
-from sphinxcontrib.dd import yaml
+from . import yaml
 
 
 class Directive(BaseDirective):

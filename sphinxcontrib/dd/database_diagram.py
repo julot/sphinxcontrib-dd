@@ -6,7 +6,7 @@ from docutils.parsers.rst import directives
 from sphinx.util.compat import Directive as BaseDirective
 from sphinx.ext.graphviz import render_dot_html, render_dot_latex
 
-from sphinxcontrib.dd import yaml
+from . import yaml
 
 
 def serialize(dictionary):
