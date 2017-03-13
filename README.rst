@@ -194,11 +194,13 @@ graph-labeljust
 
   "l" and "r" for left- and right-justiﬁed labels, respectively.
 
+
 graph-labelloc
   Location of graph label.
   Default to "top" inherited from GraphViz.
 
   "t" and "b" for top- and bottom-justiﬁed labels, respectively.
+
 
 graph-margin
   Margin included in page, in inches.
@@ -226,11 +228,13 @@ node-shape
 
   More `here <http://www.graphviz.org/doc/info/shapes.html>`__.
 
+
 node-style
   Style of of the node.
   Default to "rounded"
 
   More `here <http://www.graphviz.org/doc/info/shapes.html#d:style>`__.
+
 
 root-samerank
   This option tells GraphViz that some node should be in the same rank.
@@ -405,6 +409,47 @@ Generate data dictionary:
 ::
 
   .. data-dictionary:: external.yml
+
+
+Available options:
+
+widths
+  Space- or comma-separated list of integer.
+  These values calculated into percent totaled to 100%.
+
+  The default is ``1 1 1 4`` that will be calculated into 14%, 14%, 14% and
+  57% respectively.
+
+
+headers
+  Space- or comma-separated list of string that will become table header.
+
+  The default is ``Name Type Length Description``.
+
+  .. note::
+
+    If one column name contains space, use comma-separated format.
+
+
+columns
+  Space- or comma-separated list attributes of a property.
+
+  The default is ``name type maxLength description``.
+  ``name`` is a special keyword that points to the property name.
+
+
+The options can also be set as config specified in ``conf.py`` by prefixing it
+with ``data_dictionary_``.
+The value in ``conf.py`` is applied to all directives but will be override by
+options in the directive.
+
+For example you want to set ``widths`` to "1 1 1 3" for all directives.
+
+In ``conf.py``:
+
+::
+
+  data_dictionary_widths = "1 1 1 3"
 
 
 TODO
