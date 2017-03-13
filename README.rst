@@ -461,5 +461,5 @@ TODO
 
 #. Change table name in data dictionary into h+1 depending on the context.
 #. Change output format from ``graphviz_output_format = 'svg'`` to
-   ``database_diagram_output_format = 'svg'`` that only affect
-   database-diagram.
+   ``database_diagram_output_format = 'svg'`` so it's only affect
+   database-diagram directive.
