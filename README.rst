@@ -141,20 +141,20 @@ Usage
 
 This extension add two directives:
 
-**.. database-diagram:: path [path_to_definition]**
+**.. database-diagram:: path [another_path]**
   Embed database diagram produced by GraphViz.
 
-**.. data-dictionary:: path [path_to_definition]**
+**.. data-dictionary:: path [another_path]**
   Embed data dictionary in table format.
 
 path
   Path to yml file.
 
-path_to_definition
-  Optional path to yml file that contains the definitions.
+another_path
+  Optional path to another yml file if split the spec.
 
   If you already have a swagger spec file used to define your REST API,
-  you can reuse the file as is without modification.
+  you can reuse that file as is without modification by specifying it here.
 
   In the background I simply combine the two files into one.
 
