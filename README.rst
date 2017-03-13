@@ -385,6 +385,8 @@ In ``conf.py``:
 
   database_diagram_node_fontname = "Calibri"
 
+You may set all the config value as string even for numeric value.
+
 Please note that this options is not available as config:
 
 - root-samerank
@@ -428,7 +430,8 @@ headers
 
   .. note::
 
-    If one column name contains space, use comma-separated format.
+    If you want a column name that contains space,
+    use comma-separated format instead.
 
 
 columns
@@ -440,16 +443,17 @@ columns
 
 The options can also be set as config specified in ``conf.py`` by prefixing it
 with ``data_dictionary_``.
+But set the value as list.
 The value in ``conf.py`` is applied to all directives but will be override by
 options in the directive.
-
-For example you want to set ``widths`` to "1 1 1 3" for all directives.
 
 In ``conf.py``:
 
 ::
 
-  data_dictionary_widths = "1 1 1 3"
+  data_dictionary_widths = [1, 1, 1, 4]
+  data_dictionary_headers = ['Name', 'Type', 'Length', 'Description']
+  data_dictionary_columns = ['name', 'type', 'maxLength', 'description']
 
 
 TODO
