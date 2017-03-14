@@ -416,7 +416,7 @@ Generate data dictionary:
 
 ::
 
-  .. data-dictionary:: external.yml
+  .. data-dictionary:: example.yml
 
 
 Available options:
