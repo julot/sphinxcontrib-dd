@@ -29,7 +29,7 @@ definitions:
       role_id:
         $ref: '#/definitions/Identity'
         
-entities:
+tables:
   User:
     name: users
     description: Table to stores user information.
@@ -48,4 +48,4 @@ entities:
 
 relationships:
   - User ||--0< UserRole
-  - Role ||--0< UserRole
+  - UserRole >|--|| Role
