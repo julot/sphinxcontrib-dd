@@ -179,7 +179,10 @@ Example:
 
   .. database-diagram:: example.yml
 
-.. image:: example.png
+The ``example.yml`` file from
+`here <https://github.com/julot/sphinxcontrib-dd/blob/master/example.yml>`__
+will result in
+`this <https://github.com/julot/sphinxcontrib-dd/blob/master/example.png>`__.
 
 There are several options available to modify the look and feel of the diagram:
 
