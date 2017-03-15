@@ -260,7 +260,7 @@ root-samerank
 
   Example:
 
-  Relationship as ``A ||--0< B`` will produce:
+  Relationship ``A ||--0< B`` will produce:
 
   ::
 
@@ -269,9 +269,9 @@ root-samerank
     +---+          +---+
 
   If you understand dot syntax,
-  the relationship above translated into ``A -> B``.
+  the relationship above is translated into ``A -> B``.
 
-  While relationship as ``B >0--|| A`` will produce:
+  While relationship ``B >0--|| A`` will produce:
 
   ::
 
@@ -306,7 +306,7 @@ root-samerank
     +---+
 
   To illustrate how the option works in comma separated value,
-  image you have relationship in yaml file like this:
+  imagine you have relationship in yaml file like this:
 
   ::
 
