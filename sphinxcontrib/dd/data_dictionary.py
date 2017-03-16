@@ -1,4 +1,5 @@
 from docutils import nodes
+from docutils.statemachine import ViewList
 from docutils.parsers.rst import directives
 from sphinx.util.compat import Directive as BaseDirective
 
@@ -63,7 +64,6 @@ class Directive(BaseDirective):
         except IndexError:
             pass
 
-
         # Add the file as a dependency to the current document.
         # That means the document will be rebuilt if the file is changed.
         env.note_dependency(rel_path)
@@ -75,9 +75,9 @@ class Directive(BaseDirective):
         data = []
 
         for name, entity in spec['tables'].items():
-            data.append(create_section(name=name))
-            data.extend(generate_description(entity=entity))
-            table = create_table(
+            data.append(self.create_section(name=name))
+            data.extend(self.generate_description(entity=entity))
+            table = self.create_table(
                 entity=entity,
                 columns=columns,
                 headers=headers,
@@ -87,77 +87,79 @@ class Directive(BaseDirective):
 
         return data
 
+    def parse_string(self, text):
+        if not text:
+            return []
 
-def create_section(name):
-    # FIXME: Make this into h+1 (h1-h6) depending on the context
+        element = nodes.paragraph()
+        self.state.nested_parse(ViewList(str(text).splitlines()), 0, element)
+        return element.children
 
-    paragraph = nodes.paragraph()
-    strong = nodes.strong(text=name)
-    paragraph.append(strong)
+    def generate_description(self, entity):
+        name = entity.get('name', None)
+        if name:
+            paragraph = nodes.paragraph(text='Name: ')
+            paragraph.extend([nodes.literal(text=entity['name'])])
+            yield paragraph
 
-    return paragraph
+        description = entity.get('description', None)
+        if description:
+            for each in self.parse_string(description):
+                yield each
 
+    def create_table(self, entity, columns=None, headers=None, widths=None):
+        group = self.create_group(widths)
+        group.append(self.create_header(data=headers))
+        group.append(self.create_body(entity=entity, columns=columns))
 
-def generate_description(entity):
-    name = entity.get('name', None)
-    if name:
-        paragraph = nodes.paragraph(text='Name: ')
-        paragraph.extend([nodes.literal(text=entity['name'])])
-        yield paragraph
+        table = nodes.table(classes=['data-dictionary'])
+        table.append(group)
+        return table
 
-    # FIXME: Description may contains markdown/reST(?) syntax
-    # http://www.sphinx-doc.org/en/stable/extdev/markupapi.html#parsing-directive-content-as-rest
-    description = entity.get('description', None)
-    if description:
-        yield nodes.paragraph(text=description)
+    @staticmethod
+    def create_group(widths):
+        group = nodes.tgroup(cols=len(widths))
 
+        group.extend(
+            nodes.colspec(colwidth=width) for width in widths
+        )
 
-def create_row(data):
-    row = nodes.row()
-    for datum in data:
-        row.append(nodes.entry(datum, nodes.paragraph(text=datum)))
-    return row
+        return group
 
+    def create_header(self, data):
+        head = nodes.thead()
+        head.append(self.create_row(data))
+        return head
 
-def create_header(data):
-    head = nodes.thead()
-    head.append(create_row(data))
-    return head
+    def create_row(self, data):
+        row = nodes.row()
+        for datum in data:
+            row.append(nodes.entry(datum, *self.parse_string(text=datum)))
+        return row
 
+    def create_body(self, entity, columns):
+        body = nodes.tbody()
+        for k, v in entity['columns']['properties'].items():
+            data = []
+            for column in columns:
+                if column == 'name':
+                    data.append(k)
+                    continue
 
-def create_body(entity, columns):
-    body = nodes.tbody()
-    for k, v in entity['columns']['properties'].items():
-        data = []
-        for column in columns:
-            if column == 'name':
-                data.append(k)
-                continue
+                data.append(v.get(column, ''))
+            body.append(self.create_row(data=data))
 
-            data.append(v.get(column, ''))
-        body.append(create_row(data=data))
+        return body
 
-    return body
+    @staticmethod
+    def create_section(name):
+        # FIXME: Make this into h+1 (h1-h6) depending on the context
 
+        paragraph = nodes.paragraph()
+        strong = nodes.strong(text=name)
+        paragraph.append(strong)
 
-def create_group(widths):
-    group = nodes.tgroup(cols=len(widths))
-
-    group.extend(
-        nodes.colspec(colwidth=width) for width in widths
-    )
-
-    return group
-
-
-def create_table(entity, columns=None, headers=None, widths=None):
-    group = create_group(widths)
-    group.append(create_header(data=headers))
-    group.append(create_body(entity=entity, columns=columns))
-
-    table = nodes.table(classes=['data-dictionary'])
-    table.append(group)
-    return table
+        return paragraph
 
 
 def setup(app):
