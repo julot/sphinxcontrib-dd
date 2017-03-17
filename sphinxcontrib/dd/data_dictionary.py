@@ -63,12 +63,6 @@ class Directive(BaseDirective):
             getattr(config, 'data_dictionary_{0}'.format('columns')),
         )
 
-        # FIXME: Change this to options to specify header label
-        # headers = ['Name', 'Type', 'Length', 'Description']
-
-        # FIXME: Change to options to specify the data to fetch
-        # columns = ['name', 'type', 'maxLength', 'description']
-
         rel_path, path = env.relfn2path(directives.path(self.arguments[0]))
 
         def_rel_path = ''
