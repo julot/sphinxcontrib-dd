@@ -12,6 +12,7 @@ requires = [
     'Sphinx>=0.6',
     'PyYAML >= 3.12',
     'jsonschema >= 2.5.1',
+    'recommonmark >= 0.4.0',
 ]
 
 keywords = [
@@ -23,7 +24,7 @@ keywords = [
 
 setup(
     name='sphinxcontrib-dd',
-    version='0.1.1',
+    version='0.1.3',
     url='https://github.com/julot/sphinxcontrib-dd',
     license='MIT',
     author='Andy Yulius',

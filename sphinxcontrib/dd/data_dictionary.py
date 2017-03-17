@@ -1,7 +1,8 @@
 from docutils import nodes
-from docutils.statemachine import ViewList
+# from docutils.statemachine import ViewList
 from docutils.parsers.rst import directives
 from sphinx.util.compat import Directive as BaseDirective
+from recommonmark.parser import CommonMarkParser
 
 from . import yaml
 
@@ -12,6 +13,21 @@ def string_list(argument):
     else:
         entries = argument.split()
     return [entry.strip() for entry in entries]
+
+
+class Parser(CommonMarkParser):
+
+    def setup_parse(self, inputstring, document):
+        """Initial parse setup.  Call at start of `self.parse()`."""
+        self.inputstring = inputstring
+        self.document = document
+        # document.reporter.attach_observer(document.note_parse_message)
+
+    def finish_parse(self):
+        """Finalize parse details.  Call at end of `self.parse()`."""
+        # self.document.reporter.detach_observer(
+        #     self.document.note_parse_message)
+        pass
 
 
 class Directive(BaseDirective):
@@ -87,12 +103,15 @@ class Directive(BaseDirective):
 
         return data
 
-    def parse_string(self, text):
+    @staticmethod
+    def parse_string(text):
         if not text:
             return []
 
         element = nodes.paragraph()
-        self.state.nested_parse(ViewList(str(text).splitlines()), 0, element)
+        # self.state.nested_parse(ViewList(str(text).splitlines()), 0, element)
+        parser = Parser()
+        parser.parse(str(text), element)
         return element.children
 
     def generate_description(self, entity):
