@@ -58,6 +58,49 @@ def resolve_refs(uri, spec):
     return _do_resolve(spec)
 
 
+def merge(a, b, path=None):
+    "merges b into a"
+    if path is None: path = []
+    for key in b:
+        if key in a:
+            if isinstance(a[key], dict) and isinstance(b[key], dict):
+                merge(a[key], b[key], path + [str(key)])
+            elif a[key] == b[key]:
+                pass  # same leaf value
+            elif isinstance(a[key], list) and isinstance(b[key], list):
+                a[key].extend(b[key])
+            else:
+                msg = (
+                    'Conflict at {0}. '
+                    'Unexpected data type {1} and {2}.'
+                )
+                pos = '.'.join(path + [str(key)])
+                raise Exception(msg.format(pos, type(a[key]), type(b[key])))
+
+        else:
+            a[key] = b[key]
+    return a
+
+
+def resolve_all_of(spec):
+    result = collections.OrderedDict()
+
+    for key, value in spec.items():
+        if type(value) == collections.OrderedDict:
+            result[key] = resolve_all_of(value)
+        else:
+            result[key] = value
+
+        if key == 'allOf':
+            for index, each in enumerate(value):
+                if index == 0:
+                    result = each
+                else:
+                    result = merge(result, each)
+
+    return result
+
+
 def load(path, definition_path=None):
     f = tempfile.NamedTemporaryFile(mode='w', encoding='UTF-8', delete=False)
 
@@ -74,6 +117,7 @@ def load(path, definition_path=None):
     with io.open(f.name, 'rt', encoding='utf-8') as stream:
         spec = load_yaml(stream, Loader)
     spec = resolve_refs('file://{0}'.format(f.name), spec)
+    spec = resolve_all_of(spec)
 
     os.unlink(f.name)
 
