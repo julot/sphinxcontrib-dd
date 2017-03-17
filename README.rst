@@ -465,6 +465,36 @@ In ``conf.py``:
   data_dictionary_columns = ['name', 'type', 'maxLength', 'description']
 
 
+Changes
+=======
+
+
+0.1.3
+-----
+
+* Change syntax for description from reStructuredText to Markdown because
+  Swagger use Markdown.
+
+
+0.1.2
+-----
+
+* Description may contains reStructuredText syntax.
+
+
+0.1.1
+-----
+
+* Strange thing happens.
+  After delete and re-upload version 0.1.0, pip is unable to install it.
+
+
+0.1.0
+-----
+
+* First public release.
+
+
 TODO
 ====
 
