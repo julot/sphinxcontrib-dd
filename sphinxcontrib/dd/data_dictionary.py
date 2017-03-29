@@ -166,13 +166,9 @@ class Directive(BaseDirective):
 
     @staticmethod
     def create_section(name):
-        # FIXME: Make this into h+1 (h1-h6) depending on the context
-
-        paragraph = nodes.paragraph()
-        strong = nodes.strong(text=name)
-        paragraph.append(strong)
-
-        return paragraph
+        section = nodes.section(ids=[name])
+        section.append(nodes.title(text=name))
+        return section
 
 
 def setup(app):
