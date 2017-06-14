@@ -3,7 +3,7 @@ import re
 from collections import OrderedDict
 from docutils import nodes
 from docutils.parsers.rst import directives
-from sphinx.util.compat import Directive as BaseDirective
+from docutils.parsers.rst import Directive as BaseDirective
 from sphinx.ext.graphviz import render_dot_html, render_dot_latex
 
 from . import yaml
@@ -222,7 +222,7 @@ class Directive(BaseDirective):
 
         node = Node()
         node['spec'] = yaml.load(path=path, definition_path=def_path)
-        
+
         node['graph'] = {
             'margin': 0,
             'nodesep': .75,

@@ -1,7 +1,7 @@
 from docutils import nodes
 # from docutils.statemachine import ViewList
 from docutils.parsers.rst import directives
-from sphinx.util.compat import Directive as BaseDirective
+from docutils.parsers.rst import Directive as BaseDirective
 from recommonmark.parser import CommonMarkParser
 
 from . import yaml

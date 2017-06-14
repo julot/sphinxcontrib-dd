@@ -24,7 +24,7 @@ keywords = [
 
 setup(
     name='sphinxcontrib-dd',
-    version='0.1.5',
+    version='0.1.6',
     url='https://github.com/julot/sphinxcontrib-dd',
     license='MIT',
     author='Andy Yulius',
@@ -47,5 +47,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=requires,
+    setup_requires=['pytest-runner'],
+    tests_require=['pytest'],
     namespace_packages=['sphinxcontrib'],
 )

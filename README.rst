@@ -470,6 +470,13 @@ In ``conf.py``:
 Changes
 =======
 
+0.1.6
+-----
+
+* Change ``sphinx.util.compat.Directive`` to
+  ``docutils.parsers.rst.Directive`` because it will be removed in Sphinx 1.7.
+
+
 0.1.5
 -----
 
