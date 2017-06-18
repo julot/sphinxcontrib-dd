@@ -23,7 +23,7 @@ definitions:
     allOf:
       - $ref: '#/definitions/Common'
         properties:
-          title:
+          name:
             type: nvarchar
             maxLength: 255
 

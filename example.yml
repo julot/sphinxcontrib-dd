@@ -14,27 +14,27 @@ definitions:
   User:
     allOf:
       - $ref: '#/definitions/Common'
-    properties:
-      name:
-        type: nvarchar
-        maxLength: 255
+        properties:
+          name:
+            type: nvarchar
+            maxLength: 255
 
   Role:
-    properties:
-      id:
-        $ref: '#/definitions/Identity'
-      name:
-        type: nvarchar
-        maxLength: 255
+    allOf:
+      - $ref: '#/definitions/Common'
+        properties:
+          name:
+            type: nvarchar
+            maxLength: 255
 
   UserRole:
-    properties:
-      id:
-        $ref: '#/definitions/Identity'
-      user_id:
-        $ref: '#/definitions/Identity'
-      role_id:
-        $ref: '#/definitions/Identity'
+    allOf:
+      - $ref: '#/definitions/Common'
+        properties:
+          user_id:
+            $ref: '#/definitions/Identity'
+          role_id:
+            $ref: '#/definitions/Identity'
 
 tables:
   User:

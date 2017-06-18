@@ -184,7 +184,7 @@ The ``example.yml`` file from
 will result in
 `this <https://github.com/julot/sphinxcontrib-dd/blob/master/example.png>`__.
 
-.. image:: https://image.ibb.co/ceDJMF/example.png
+.. image:: https://image.ibb.co/cnZATQ/example.png
 
 There are several options available to modify the look and feel of the diagram:
 
