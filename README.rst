@@ -470,6 +470,12 @@ In ``conf.py``:
 Changes
 =======
 
+0.1.7
+-----
+
+* Fix allOf bug.
+
+
 0.1.6
 -----
 

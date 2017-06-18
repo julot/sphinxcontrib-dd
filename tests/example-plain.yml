@@ -1,0 +1,108 @@
+definitions:
+  Identity:
+    type: integer
+    format: int64
+    minimum: 1
+
+  Common:
+    properties:
+      id:
+        type: integer
+        format: int64
+        minimum: 1
+      created_at:
+        type: dateTime
+
+  User:
+    properties:
+      id:
+        type: integer
+        format: int64
+        minimum: 1
+      created_at:
+        type: dateTime
+      name:
+        type: nvarchar
+        maxLength: 255
+
+  Role:
+    properties:
+      id:
+        type: integer
+        format: int64
+        minimum: 1
+      created_at:
+        type: dateTime
+      title:
+        type: nvarchar
+        maxLength: 255
+
+  UserRole:
+    properties:
+      id:
+        type: integer
+        format: int64
+        minimum: 1
+      created_at:
+        type: dateTime
+      user_id:
+        type: integer
+        format: int64
+        minimum: 1
+      role_id:
+        type: integer
+        format: int64
+        minimum: 1
+
+tables:
+  User:
+    name: users
+    description: Table to stores user information.
+    columns:
+      properties:
+        id:
+          type: integer
+          format: int64
+          minimum: 1
+        created_at:
+          type: dateTime
+        name:
+          type: nvarchar
+          maxLength: 255
+  Role:
+    name: roles
+    description: Table to stores roles information.
+    columns:
+      properties:
+        id:
+          type: integer
+          format: int64
+          minimum: 1
+        created_at:
+          type: dateTime
+        title:
+          type: nvarchar
+          maxLength: 255
+  UserRole:
+    name: users_roles
+    description: Table to stores roles of user.
+    columns:
+      properties:
+        id:
+          type: integer
+          format: int64
+          minimum: 1
+        created_at:
+          type: dateTime
+        user_id:
+          type: integer
+          format: int64
+          minimum: 1
+        role_id:
+          type: integer
+          format: int64
+          minimum: 1
+
+relationships:
+  - User ||--0< UserRole
+  - UserRole >|--|| Role

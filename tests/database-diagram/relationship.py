@@ -1,7 +1,7 @@
 from sphinxcontrib.dd.database_diagram import Relationship
 
 
-def test_relationship():
+def test():
     relations = {
         'E1 |--| E2': (
             '"E1" -> "E2" '

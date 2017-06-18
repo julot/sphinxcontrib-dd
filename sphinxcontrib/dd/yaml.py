@@ -6,6 +6,7 @@ import tempfile
 
 import yaml.resolver
 
+from copy import deepcopy
 from yaml import load as load_yaml
 
 
@@ -46,7 +47,11 @@ def resolve_refs(uri, spec):
     def _do_resolve(node):
         if isinstance(node, collections.Mapping) and '$ref' in node:
             with resolver.resolving(node['$ref']) as resolved:
-                return resolved
+                result = deepcopy(resolved)
+                for key in resolved:
+                    if key in node:
+                        merge(result[key], node[key])
+                return result
         elif isinstance(node, collections.Mapping):
             for k, v in node.items():
                 node[k] = _do_resolve(v)
@@ -116,6 +121,11 @@ def load(path, definition_path=None):
 
     with io.open(f.name, 'rt', encoding='utf-8') as stream:
         spec = load_yaml(stream, Loader)
+
+    # FIXME: Change this to function that check whether $ref key still exists
+    # The problem is sometimes the key exists in dict inside list
+    spec = resolve_refs('file://{0}'.format(f.name), spec)
+    spec = resolve_refs('file://{0}'.format(f.name), spec)
     spec = resolve_refs('file://{0}'.format(f.name), spec)
     spec = resolve_all_of(spec)
 
