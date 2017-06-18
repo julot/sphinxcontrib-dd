@@ -122,11 +122,12 @@ def load(path, definition_path=None):
     with io.open(f.name, 'rt', encoding='utf-8') as stream:
         spec = load_yaml(stream, Loader)
 
-    # FIXME: Change this to function that check whether $ref key still exists
-    # The problem is sometimes the key exists in dict inside list
-    spec = resolve_refs('file://{0}'.format(f.name), spec)
-    spec = resolve_refs('file://{0}'.format(f.name), spec)
-    spec = resolve_refs('file://{0}'.format(f.name), spec)
+    while True:
+        origin = deepcopy(spec)
+        spec = resolve_refs('file://{0}'.format(f.name), spec)
+        if spec == origin:
+            break
+
     spec = resolve_all_of(spec)
 
     os.unlink(f.name)
