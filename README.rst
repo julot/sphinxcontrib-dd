@@ -153,7 +153,7 @@ path
   Path to yml file.
 
 another_path
-  Optional path to another yml file if split the spec.
+  Optional path to another yml file.
 
   If you already have a swagger spec file used to define your REST API,
   you can reuse that file as is without modification by specifying it here.
