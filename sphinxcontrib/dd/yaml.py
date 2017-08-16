@@ -64,7 +64,6 @@ def resolve_refs(uri, spec):
 
 
 def merge(a, b, path=None):
-    "merges b into a"
     if path is None: path = []
     for key in b:
         if key in a:
