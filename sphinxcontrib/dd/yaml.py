@@ -9,6 +9,13 @@ import yaml.resolver
 from copy import deepcopy
 from yaml import load as load_yaml
 
+try:
+    # Import for modern python
+    from collections.abc import Mapping
+except ImportError:
+    # Required for Python 2
+    # Deprecated in 3.3 and removed in 3.8
+    from collections import Mapping
 
 # This is taken from sphinxcontrib-openapi
 
@@ -45,14 +52,14 @@ def resolve_refs(uri, spec):
     resolver = jsonschema.RefResolver(uri, spec)
 
     def _do_resolve(node):
-        if isinstance(node, collections.Mapping) and '$ref' in node:
+        if isinstance(node, Mapping) and '$ref' in node:
             with resolver.resolving(node['$ref']) as resolved:
                 result = deepcopy(resolved)
                 for key in resolved:
                     if key in node:
                         merge(result[key], node[key])
                 return result
-        elif isinstance(node, collections.Mapping):
+        elif isinstance(node, Mapping):
             for k, v in node.items():
                 node[k] = _do_resolve(v)
         elif isinstance(node, (list, tuple)):
